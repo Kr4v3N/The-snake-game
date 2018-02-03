@@ -6,6 +6,7 @@ window.onload = function ()//Permet d'executer la fonction quand le chargement d
     var ctx;
     var delay = 100;
     var snakee;
+    var applee;
 
     init();//On exécute la fonction init().
 
@@ -18,6 +19,7 @@ window.onload = function ()//Permet d'executer la fonction quand le chargement d
         document.body.appendChild(canvas);//On attache canvas à notre page html.
         ctx = canvas.getContext('2d');//On dessine dans le canvas en deux dimensions.
         snakee = new Snake([[6,4], [5,4], [4,4]], "right");
+        applee = new Apple([10,10]);
         refreshCanvas();//La fonction init appelle la fonction refreshConvas().
 
     }
@@ -26,6 +28,7 @@ window.onload = function ()//Permet d'executer la fonction quand le chargement d
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);//Effacer tout le rectangle.
         snakee.advance();
         snakee.draw();
+        applee.draw();
         setTimeout(refreshCanvas,delay);/*La methode de setTimeout()appelle une fonction aprés un nombre spécifié de millisecondes(100)en effet , elle permet de dire execute-moi la fonction refreshCanvas à chaque 0.1seconde.*/
         
     }
@@ -96,6 +99,25 @@ window.onload = function ()//Permet d'executer la fonction quand le chargement d
                 }
         };
     }
+    
+    function Apple(position) 
+        {
+            this.position = position;
+            this.draw = function() 
+            {
+                ctx.save();
+                ctx.fillStyle = "#33cc33";
+                ctx.beginPath();
+                var radius = blockSize/2; 
+                var x = position[0]*blockSize + radius;
+                var y = position[1]*blockSize + radius;
+                ctx.arc(x,y, radius, 0, Math.PI*2, true);
+                ctx.fill();
+                ctx.restore();
+            };
+        }
+    
+    
                 
     document.onkeydown = function handelKeyDown(e)
     {
