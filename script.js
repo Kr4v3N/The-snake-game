@@ -1,5 +1,5 @@
-window.onload = function () //Permet d'executer la fonction quand le chargement de la page est terminé.(fonction anonyme que l'on exécute immédiatement).
-{
+/*Permet d'executer la fonction quand le chargement de la page est terminé.(fonction anonyme que l'on exécute immédiatement).*/
+window.onload = function () {
     var canvasWidth = 900;
     var canvasHeight = 600;
     var blockSize = 30;
@@ -9,102 +9,87 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
     var applee;
     var widthInBlocks = canvasWidth / blockSize;
     var heightInBlocks = canvasHeight / blockSize;
-    var score; 
-
-    init(); //On exécute la fonction init().
-
-    function init() //Fonction d'initialisation standard.
-    {
+    var score;
+    var timeOut;
+    //On exécute la fonction init().
+    init(); 
+    //Fonction d'initialisation standard.
+    function init() {
         var canvas = document.createElement('canvas'); /*On crée un élément sur notre page html.*/
         canvas.width = canvasWidth; //Largeur du canvas.
         canvas.height = canvasHeight; //Hauteur du canvas.
         canvas.style.border = "29px solid gray"; //Bordure du canvas.
-        canvas.style.margin="50px auto";
+        canvas.style.margin = "50px auto";
         canvas.style.display = "block";
         canvas.backgroundColor = "#ddd";
         document.body.appendChild(canvas); //On attache canvas à notre page html.
         ctx = canvas.getContext('2d'); /*On dessine dans le canvas en deux dimensions.*/
-        snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
+        snakee = new Snake([[6, 4], [5, 4], [4, 4], [3, 4], [2, 4]], "right");
         applee = new Apple([10, 10]);
         score = 0;
         refreshCanvas(); //La fonction init appelle la fonction refreshCanvas().
-
     }
-
-    function refreshCanvas() //Rafraîchir le canvas.
-    {
+    //Rafraîchir le canvas.
+    function refreshCanvas() {
         snakee.advance();
-        if (snakee.checkCollision()) 
-        {
+        if (snakee.checkCollision()) {
             gameOver();
-        } 
-        else 
-        {
-            if(snakee.isEatingApple(applee))
-                {
-                    score++;
-                    snakee.ateApple = true;
-                    do 
-                        {
-                            applee.setNewPosition();
-                        }
-                    while(applee.isOnSnake(snakee))
-                    
+        } else {
+            if (snakee.isEatingApple(applee)) {
+                score++;
+                snakee.ateApple = true;
+                do {
+                    applee.setNewPosition();
                 }
+                while (applee.isOnSnake(snakee))
+            }
             ctx.clearRect(0, 0, canvasWidth, canvasHeight); /*Effacer tout le rectangle.*/
-            drawScore(); 
+            drawScore();
             snakee.draw();
             applee.draw();
-            setTimeout(refreshCanvas, delay); /*La methode de setTimeout()appelle une fonction aprés un nombre spécifié de millisecondes(100)en effet , elle permet de dire execute-moi la fonction refreshCanvas à chaque 0.1seconde.*/
+            timeOut = setTimeout(refreshCanvas, delay); /*La methode de setTimeout()appelle une fonction aprés un nombre spécifié de millisecondes(100)en effet , elle permet de dire execute-moi la fonction refreshCanvas à chaque 0.1seconde.*/
         }
-
     }
-        
-    function gameOver()
-        {
-            ctx.save();
-            ctx.font = "bold 70px sans-serif"
-            ctx.fillStyle = "black";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.strokeStyle = "white";
-            ctx.lineWidth = 5;
-            var centreX = canvasWidth / 2;
-            var centreY = canvasHeight / 2;
-            ctx.strokeText("Game Over", centreX, centreY -180);
-            ctx.fillText("Game Over", centreX, centreY -180);
-            ctx.font = "bold 30px sans-serif";
-            ctx.strokeText("Appuyer sur la touche Espace pour rejouer", centreX, centreY -120);
-            ctx.fillText("Appuyer sur la touche Espace pour rejouer", centreX, centreY -120);
-            ctx.restore(); 
-        } 
-    function restart()
-        {
-            snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
-            applee = new Apple([10, 10]);
-            score = 0;
-            refreshCanvas();
-        }
-    function drawScore()
-        {
-            ctx.save();
-            ctx.font = "bold 100px sans-serif"
-            ctx.fillStyle = "gray";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            var centreX = canvasWidth / 2;
-            var centreY = canvasHeight / 2;
-            ctx.fillText(score.toString(), centreX, centreY);
-            ctx.restore();
-        }
-        
-
+    function gameOver() {
+        ctx.save();
+        ctx.font = "bold 70px sans-serif"
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 5;
+        var centreX = canvasWidth / 2;
+        var centreY = canvasHeight / 2;
+        ctx.strokeText("Game Over", centreX, centreY - 180);
+        ctx.fillText("Game Over", centreX, centreY - 180);
+        ctx.font = "bold 30px sans-serif";
+        ctx.strokeText("Appuyer sur la touche Espace pour rejouer", centreX, centreY - 120);
+        ctx.fillText("Appuyer sur la touche Espace pour rejouer", centreX, centreY - 120);
+        ctx.restore();
+    }
+    function restart() {
+        snakee = new Snake([[6, 4], [5, 4], [4, 4], [3, 4], [2, 4]], "right");
+        applee = new Apple([10, 10]);
+        score = 0;
+        clearTimeout(timeOut);
+        refreshCanvas();
+    }
+    function drawScore() {
+        ctx.save();
+        ctx.font = "bold 100px sans-serif"
+        ctx.fillStyle = "gray";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        var centreX = canvasWidth / 2;
+        var centreY = canvasHeight / 2;
+        ctx.fillText(score.toString(), centreX, centreY);
+        ctx.restore();
+    }
     function drawBlock(ctx, position) {
         var x = position[0] * blockSize;
         var y = position[1] * blockSize;
         ctx.fillRect(x, y, blockSize, blockSize);
     }
-
     function Snake(body, direction) {
         this.body = body;
         this.direction = direction;
@@ -116,7 +101,6 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
                 drawBlock(ctx, this.body[i]);
             }
             ctx.restore();
-
         };
         this.advance = function () {
             var nextPosition = this.body[0].slice();
@@ -136,9 +120,8 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
                 default:
                     throw ("invalid Direction");
             }
-
             this.body.unshift(nextPosition);
-            if(!this.ateApple)
+            if (!this.ateApple)
                 this.body.pop();
             else
                 this.ateApple = false;
@@ -174,30 +157,22 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             var maxY = heightInBlocks - 1;
             var isNotBetweenHorizontalWalls = snakeX < minX || snakeX > maxX;
             var isNotBetweenVerticalWalls = snakeY < minY || snakeY > maxY;
-
-            if (isNotBetweenHorizontalWalls || isNotBetweenVerticalWalls) 
-                wallCollision = true; 
-                
-
+            if (isNotBetweenHorizontalWalls || isNotBetweenVerticalWalls)
+                wallCollision = true;
             for (var i = 0; i < rest.length; i++) {
-                if (snakeX === rest[i][0] && snakeY === rest[i][1]) 
+                if (snakeX === rest[i][0] && snakeY === rest[i][1])
                     snakeCollision = true;
-                
             }
             return wallCollision || snakeCollision;
-
         };
-        this.isEatingApple = function(appleToEat)
-        {
+        this.isEatingApple = function (appleToEat) {
             var head = this.body[0];
-            if(head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1])
-                
-                return true; 
+            if (head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1])
+                return true;
             else
                 return false;
         };
     }
-
     function Apple(position) {
         this.position = position;
         this.draw = function () {
@@ -211,29 +186,21 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             ctx.fill();
             ctx.restore();
         };
-        this.setNewPosition = function()
-        {
-          var newX = Math.round(Math.random() * (widthInBlocks - 1)); 
-          var newY = Math.round(Math.random() * (heightInBlocks - 1));
-          this.position = [newX, newY];
+        this.setNewPosition = function () {
+            var newX = Math.round(Math.random() * (widthInBlocks - 1));
+            var newY = Math.round(Math.random() * (heightInBlocks - 1));
+            this.position = [newX, newY];
         };
-        this.isOnSnake = function(snakeToCheck)
-        {
+        this.isOnSnake = function (snakeToCheck) {
             var isOnSnake = false;
-            
-            for(var i = 0 ; i < snakeToCheck.body.length; i++)
-                {
-                    if(this.position[0] === snakeToCheck.body[i][0] && this.position[1] === snakeToCheck.body [i][1])
-                        {
-                            isOnSnake = true;
-                        }
+            for (var i = 0; i < snakeToCheck.body.length; i++) {
+                if (this.position[0] === snakeToCheck.body[i][0] && this.position[1] === snakeToCheck.body[i][1]) {
+                    isOnSnake = true;
                 }
-                return isOnSnake;
+            }
+            return isOnSnake;
         };
     }
-
-
-
     document.onkeydown = function handelKeyDown(e) {
         var key = e.keyCode;
         var newDirection;
@@ -259,4 +226,3 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
         snakee.setDirection(newDirection);
     };
 }
-
