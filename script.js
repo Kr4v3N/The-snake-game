@@ -18,7 +18,10 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
         var canvas = document.createElement('canvas'); /*On crée un élément sur notre page html.*/
         canvas.width = canvasWidth; //Largeur du canvas.
         canvas.height = canvasHeight; //Hauteur du canvas.
-        canvas.style.border = "1px solid"; //Bordure du canvas.
+        canvas.style.border = "29px solid gray"; //Bordure du canvas.
+        canvas.style.margin="50px auto";
+        canvas.style.display = "block";
+        canvas.backgroundColor = "#ddd";
         document.body.appendChild(canvas); //On attache canvas à notre page html.
         ctx = canvas.getContext('2d'); /*On dessine dans le canvas en deux dimensions.*/
         snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
@@ -49,9 +52,9 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
                     
                 }
             ctx.clearRect(0, 0, canvasWidth, canvasHeight); /*Effacer tout le rectangle.*/
+            drawScore(); 
             snakee.draw();
             applee.draw();
-            drawScore();
             setTimeout(refreshCanvas, delay); /*La methode de setTimeout()appelle une fonction aprés un nombre spécifié de millisecondes(100)en effet , elle permet de dire execute-moi la fonction refreshCanvas à chaque 0.1seconde.*/
         }
 
@@ -60,10 +63,21 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
     function gameOver()
         {
             ctx.save();
-            ctx.fillText("Game Over", 5, 15);
-            ctx.fillText("Appuyer sur la touche Espace pour rejouer", 5, 30);
-            ctx.restore();
-        }
+            ctx.font = "bold 70px sans-serif"
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 5;
+            var centreX = canvasWidth / 2;
+            var centreY = canvasHeight / 2;
+            ctx.strokeText("Game Over", centreX, centreY -180);
+            ctx.fillText("Game Over", centreX, centreY -180);
+            ctx.font = "bold 30px sans-serif";
+            ctx.strokeText("Appuyer sur la touche Espace pour rejouer", centreX, centreY -120);
+            ctx.fillText("Appuyer sur la touche Espace pour rejouer", centreX, centreY -120);
+            ctx.restore(); 
+        } 
     function restart()
         {
             snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
@@ -74,7 +88,13 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
     function drawScore()
         {
             ctx.save();
-            ctx.fillText(score.toString(), 5, canvasHeight - 5);
+            ctx.font = "bold 100px sans-serif"
+            ctx.fillStyle = "gray";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            var centreX = canvasWidth / 2;
+            var centreY = canvasHeight / 2;
+            ctx.fillText(score.toString(), centreX, centreY);
             ctx.restore();
         }
         
