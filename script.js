@@ -4,11 +4,12 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
     var canvasHeight = 600;
     var blockSize = 30;
     var ctx;
-    var delay = 300;
+    var delay = 100;
     var snakee;
     var applee;
     var widthInBlocks = canvasWidth / blockSize;
     var heightInBlocks = canvasHeight / blockSize;
+    var score; 
 
     init(); //On exécute la fonction init().
 
@@ -19,22 +20,26 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
         canvas.height = canvasHeight; //Hauteur du canvas.
         canvas.style.border = "1px solid"; //Bordure du canvas.
         document.body.appendChild(canvas); //On attache canvas à notre page html.
-        ctx = canvas.getContext('2d'); //On dessine dans le canvas en deux dimensions.
+        ctx = canvas.getContext('2d'); /*On dessine dans le canvas en deux dimensions.*/
         snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
         applee = new Apple([10, 10]);
-        refreshCanvas(); //La fonction init appelle la fonction refreshConvas().
+        score = 0;
+        refreshCanvas(); //La fonction init appelle la fonction refreshCanvas().
 
     }
 
     function refreshCanvas() //Rafraîchir le canvas.
     {
         snakee.advance();
-        if (snakee.checkCollision()) {
-            // GAME OVER
-        } else 
+        if (snakee.checkCollision()) 
+        {
+            gameOver();
+        } 
+        else 
         {
             if(snakee.isEatingApple(applee))
                 {
+                    score++;
                     snakee.ateApple = true;
                     do 
                         {
@@ -46,11 +51,33 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             ctx.clearRect(0, 0, canvasWidth, canvasHeight); /*Effacer tout le rectangle.*/
             snakee.draw();
             applee.draw();
+            drawScore();
             setTimeout(refreshCanvas, delay); /*La methode de setTimeout()appelle une fonction aprés un nombre spécifié de millisecondes(100)en effet , elle permet de dire execute-moi la fonction refreshCanvas à chaque 0.1seconde.*/
         }
 
-
     }
+        
+    function gameOver()
+        {
+            ctx.save();
+            ctx.fillText("Game Over", 5, 15);
+            ctx.fillText("Appuyer sur la touche Espace pour rejouer", 5, 30);
+            ctx.restore();
+        }
+    function restart()
+        {
+            snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
+            applee = new Apple([10, 10]);
+            score = 0;
+            refreshCanvas();
+        }
+    function drawScore()
+        {
+            ctx.save();
+            ctx.fillText(score.toString(), 5, canvasHeight - 5);
+            ctx.restore();
+        }
+        
 
     function drawBlock(ctx, position) {
         var x = position[0] * blockSize;
@@ -203,6 +230,9 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             case 40:
                 newDirection = "down";
                 break;
+            case 32:
+                restart();
+                return;
             default:
                 return;
         }
