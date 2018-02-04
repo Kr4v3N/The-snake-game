@@ -4,7 +4,7 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
     var canvasHeight = 600;
     var blockSize = 30;
     var ctx;
-    var delay = 100;
+    var delay = 300;
     var snakee;
     var applee;
     var widthInBlocks = canvasWidth / blockSize;
@@ -20,7 +20,7 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
         canvas.style.border = "1px solid"; //Bordure du canvas.
         document.body.appendChild(canvas); //On attache canvas à notre page html.
         ctx = canvas.getContext('2d'); //On dessine dans le canvas en deux dimensions.
-        snakee = new Snake([[6, 4], [5, 4], [4, 4]], "right");
+        snakee = new Snake([[6, 4], [5, 4], [4, 4], [3,4], [2,4]], "right");
         applee = new Apple([10, 10]);
         refreshCanvas(); //La fonction init appelle la fonction refreshConvas().
 
@@ -31,7 +31,18 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
         snakee.advance();
         if (snakee.checkCollision()) {
             // GAME OVER
-        } else {
+        } else 
+        {
+            if(snakee.isEatingApple(applee))
+                {
+                    snakee.ateApple = true;
+                    do 
+                        {
+                            applee.setNewPosition();
+                        }
+                    while(applee.isOnSnake(snakee))
+                    
+                }
             ctx.clearRect(0, 0, canvasWidth, canvasHeight); /*Effacer tout le rectangle.*/
             snakee.draw();
             applee.draw();
@@ -50,6 +61,7 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
     function Snake(body, direction) {
         this.body = body;
         this.direction = direction;
+        this.ateApple = false;
         this.draw = function () {
             ctx.save();
             ctx.fillStyle = "#ff0000"; // Couleur du rectangle.
@@ -79,7 +91,10 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             }
 
             this.body.unshift(nextPosition);
-            this.body.pop();
+            if(!this.ateApple)
+                this.body.pop();
+            else
+                this.ateApple = false;
         };
         this.setDirection = function (newDirection) {
             var allowedDirections;
@@ -125,6 +140,15 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             return wallCollision || snakeCollision;
 
         };
+        this.isEatingApple = function(appleToEat)
+        {
+            var head = this.body[0];
+            if(head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1])
+                
+                return true; 
+            else
+                return false;
+        };
     }
 
     function Apple(position) {
@@ -134,11 +158,30 @@ window.onload = function () //Permet d'executer la fonction quand le chargement 
             ctx.fillStyle = "#33cc33";
             ctx.beginPath();
             var radius = blockSize / 2;
-            var x = position[0] * blockSize + radius;
-            var y = position[1] * blockSize + radius;
+            var x = this.position[0] * blockSize + radius;
+            var y = this.position[1] * blockSize + radius;
             ctx.arc(x, y, radius, 0, Math.PI * 2, true);
             ctx.fill();
             ctx.restore();
+        };
+        this.setNewPosition = function()
+        {
+          var newX = Math.round(Math.random() * (widthInBlocks - 1)); 
+          var newY = Math.round(Math.random() * (heightInBlocks - 1));
+          this.position = [newX, newY];
+        };
+        this.isOnSnake = function(snakeToCheck)
+        {
+            var isOnSnake = false;
+            
+            for(var i = 0 ; i < snakeToCheck.body.length; i++)
+                {
+                    if(this.position[0] === snakeToCheck.body[i][0] && this.position[1] === snakeToCheck.body [i][1])
+                        {
+                            isOnSnake = true;
+                        }
+                }
+                return isOnSnake;
         };
     }
 
