@@ -12,13 +12,13 @@ window.onload = function () {
     var score;
     var timeOut;
     //On exécute la fonction init().
-    init(); 
+    init();
     //Fonction d'initialisation standard.
     function init() {
         var canvas = document.createElement('canvas'); /*On crée un élément sur notre page html.*/
         canvas.width = canvasWidth; //Largeur du canvas.
         canvas.height = canvasHeight; //Hauteur du canvas.
-        canvas.style.border = "29px solid gray"; //Bordure du canvas.
+        canvas.style.border = "29px solid green"; //Bordure du canvas.
         canvas.style.margin = "50px auto";
         canvas.style.display = "block";
         canvas.backgroundColor = "#ddd";
